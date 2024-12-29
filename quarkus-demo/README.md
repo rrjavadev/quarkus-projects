@@ -64,3 +64,39 @@ If you want to learn more about building native executables, please consult <htt
 Easily start your REST Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+
+## TLS Setup
+
+### Step 1: Create or Obtain a JKS File
+If you don't already have a JKS file, you can create one using the keytool command:
+```shell
+keytool -genkeypair -alias mykey -keyalg RSA -keysize 2048 \
+  -keystore keystore.jks -validity 365
+```
+- alias mykey: The alias for the key pair.
+- keystore keystore.jks: The name of the JKS file.
+- validity 365: The validity period of the certificate in days.
+
+### Step 2: Add the JKS File to Your Project
+Place the keystore.jks file in your src/main/resources directory or another accessible location.
+
+### Step 3: Configure Quarkus for HTTPS
+Update application.properties file to enable HTTPS and configure it to use the JKS file:
+```
+# Enable HTTPS
+quarkus.http.ssl-port=8443
+
+# JKS file configuration
+quarkus.http.ssl.certificate.key-store-file=keystore.jks
+quarkus.http.ssl.certificate.key-store-password=<your_keystore_password>
+
+# Optional: Set the key alias (default is the first key in the keystore)
+quarkus.http.ssl.certificate.key-store-key-alias=mykey
+
+# Optional: Redirect HTTP traffic to HTTPS
+quarkus.http.insecure-requests=redirect
+
+```
+
+### Step 4
+Access the endpoint using https://localhost:8443
